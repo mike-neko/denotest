@@ -33,5 +33,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "exciting-goose-52"
-          entrypoint: "deps.ts" # 📝 Update the entrypoint
+          entrypoint: "index.js" # 📝 Update the entrypoint
           root: "build"

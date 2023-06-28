@@ -22,16 +22,27 @@ jobs:
         with:
           node-version: lts/*
 
-      - uses: pnpm/action-setup@v2
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+
+      - name: Install pnpm and node_modules
+        uses: pnpm/action-setup@v2
         with:
           version: latest
+          run_install: true
 
-      - name: Build step
-        run: pnpm install && pnpm run build # 📝 Update the build command(s)
+      - name: Build site
+        run: pnpm build
+        working-directory: './' # if necessary, should contain {out}
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: "exciting-goose-52"
-          entrypoint: "mod.ts" # 📝 Update the entrypoint
-          root: "build"
+          entrypoint: "./build/index.js" # 📝 Update the entrypoint
+          root: "./"
